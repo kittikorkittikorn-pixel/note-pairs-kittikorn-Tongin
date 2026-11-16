@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Note Pairs – จับคู่โน้ตดนตรี</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--t1:#79d8cf;--t2:#c4ebf4;--panel:#fff3de;--panel2:#f6dcb4;--edge:#c98a52;--ink:#5a3a22;--sand:#f3d9a8;--coral2:#ee4d66;--gold:#ffcb3d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--t1:#0f5560;--t2:#17303f;--panel:#3b2b23;--panel2:#523b2d;--edge:#8a5d3b;--ink:#ffe9cc;--sand:#5b4630}}
+:root[data-theme=dark]{--t1:#0f5560;--t2:#17303f;--panel:#3b2b23;--panel2:#523b2d;--edge:#8a5d3b;--ink:#ffe9cc;--sand:#5b4630}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;font-family:Kanit,"Noto Sans Thai",system-ui,sans-serif;line-height:1.4;color:var(--ink);background:linear-gradient(180deg,var(--t2),var(--t1));overflow-x:hidden;min-height:100vh;position:relative}
+body::after{content:"";position:fixed;left:-10%;right:-10%;bottom:-10vh;height:30vh;background:radial-gradient(120% 100% at 50% 100%,var(--sand) 55%,transparent 56%);opacity:.6;pointer-events:none}
+[hidden]{display:none!important}
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.bg svg{position:absolute;width:var(--s);height:var(--s);color:#fff;opacity:.35;animation:fl 9s ease-in-out infinite}
+@keyframes fl{50%{transform:translateY(-24px) rotate(12deg)}}
+.screen{display:none;position:relative;z-index:1;min-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));padding:16px;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.screen.on{display:flex;animation:in .45s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes in{from{opacity:0;transform:translateY(18px) scale(.97)}}
+.btn{--a:#a6ee62;--b:#35b43a;--sh:#23842c;display:inline-flex;align-items:center;justify-content:center;gap:.3em;font:700 1.1rem Kanit,sans-serif;border:0;border-radius:999px;padding:.6em 1.6em;min-height:48px;color:#fff;cursor:pointer;text-shadow:0 2px 0 rgba(0,0,0,.2);background:linear-gradient(var(--a),var(--b));box-shadow:inset 0 3px 0 rgba(255,255,255,.45),0 6px 0 var(--sh),0 12px 18px rgba(60,30,0,.25);transition:transform .12s,box-shadow .12s}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(5px);box-shadow:inset 0 3px 0 rgba(255,255,255,.4),0 1px 0 var(--sh),0 3px 6px rgba(60,30,0,.25)}
+.btn:focus-visible,.chip:focus-visible,.sw:focus-visible,.card:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.go{font-size:1.6rem;padding:.55em 1.9em}.go svg{width:1em;height:1em;fill:#fff}
+.or{--a:#ffb347;--b:#f07a2a;--sh:#b9531a}.bl{--a:#7dc0ff;--b:#3d82f0;--sh:#2a5db5}.rd{--a:#ff8a78;--b:#ee4d66;--sh:#b02d48}
+.ic{width:52px;height:52px;padding:0}
+.ic svg{width:26px;height:26px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.row{display:flex;gap:14px;align-items:center;justify-content:center}
+.tt{text-align:center}
+.logo{margin:0;font-size:clamp(2.8rem,13vw,4.8rem);line-height:1.05;font-weight:700;color:#fff;text-shadow:0 4px 0 var(--coral2),0 8px 0 #b02d48,0 14px 18px rgba(0,0,0,.25)}
+.sub{margin:.9em 0 0;color:#fff;font-weight:600;text-shadow:0 2px 6px rgba(0,60,70,.55)}
+.pill{background:var(--panel);border:3px solid var(--edge);border-radius:99px;padding:.25em 1em;margin:0;font-size:.95rem;text-align:center}
+.hero{display:flex;align-items:flex-end;justify-content:center;padding-top:8px}
+.hero .card{width:clamp(76px,22vw,104px);margin:0 -6px;pointer-events:none;transform:rotate(var(--r));animation:bob 3.2s ease-in-out infinite;animation-delay:var(--d)}
+.hero .card:nth-child(2){width:clamp(92px,27vw,128px);z-index:1}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r))}50%{transform:translateY(-10px) rotate(var(--r))}}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.chip{font:600 1rem Kanit,sans-serif;min-height:44px;padding:.35em 1em;border:3px solid var(--edge);border-radius:99px;background:var(--panel);color:var(--ink);cursor:pointer;transition:.15s}
+.chip small{opacity:.75}
+.chip[aria-checked=true]{background:linear-gradient(#ff8a78,var(--coral2));color:#fff;border-color:#b02d48;transform:translateY(-2px)}
+.panel{position:relative;width:min(440px,100%);padding:34px 20px 20px;border:4px solid var(--edge);border-radius:26px;background:linear-gradient(var(--panel),var(--panel2));box-shadow:inset 0 0 0 3px rgba(255,255,255,.4),0 14px 30px rgba(60,30,0,.3)}
+.rib{position:absolute;left:50%;top:-18px;transform:translateX(-50%);padding:.2em 1.6em;color:#fff;font-weight:700;font-size:1.15rem;white-space:nowrap;border-radius:10px;background:linear-gradient(#ff8a78,var(--coral2));box-shadow:0 4px 0 #b02d48,0 8px 12px rgba(0,0,0,.2)}
+.cl{position:absolute;right:-8px;top:-12px;width:42px;height:42px}
+.modal{position:fixed;inset:0;z-index:5;display:grid;place-items:center;padding:16px;background:rgba(15,40,50,.55);backdrop-filter:blur(4px);animation:in .25s}
+.r2{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:.6em 0;font-weight:600;border-bottom:2px dashed rgba(201,138,82,.55)}
+.sw{position:relative;flex:none;width:58px;height:32px;border:3px solid var(--edge);border-radius:99px;background:#cdb89a;cursor:pointer;transition:.2s}
+.sw::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 3px rgba(0,0,0,.3);transition:.2s}
+.sw[aria-checked=true]{background:#46c04a}.sw[aria-checked=true]::after{transform:translateX(26px)}
+input[type=range]{width:100%;height:32px;accent-color:var(--coral2)}
+.steps{list-style:none;margin:0 0 16px;padding:0;display:grid;gap:10px;counter-reset:s}
+.steps li{counter-increment:s;display:flex;gap:12px;align-items:center;padding:.6em .8em;border-radius:16px;background:rgba(120,70,30,.13)}
+.steps li::before{content:counter(s);flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;color:#fff;font-weight:700;background:linear-gradient(#7dc0ff,#3d82f0);box-shadow:0 3px 0 #2a5db5}
+.hud{display:flex;gap:8px;align-items:center;width:min(560px,100%)}
+.hud .ic{width:46px;height:46px;flex:none}
+.stat{flex:1;padding:.15em .3em;text-align:center;line-height:1.2;border:3px solid var(--edge);border-radius:16px;background:linear-gradient(var(--panel),var(--panel2));box-shadow:0 4px 0 rgba(120,70,30,.4)}
+.stat small{display:block;font-size:.72rem;opacity:.8}.stat b{display:inline-block;font-size:1.3rem}
+.pu{animation:pu .4s}@keyframes pu{40%{transform:scale(1.35);color:var(--coral2)}}
+.bar{position:relative;width:min(560px,100%);height:24px;border:3px solid var(--edge);border-radius:99px;background:rgba(90,58,34,.4);overflow:hidden}
+.bar i{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(90deg,#a6ee62,#35b43a);transition:width .5s}
+.bar span{position:absolute;inset:0;display:grid;place-items:center;font-size:.75rem;font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.board{display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:clamp(8px,2vw,14px);width:max(270px,min(100%,560px,calc((100dvh - 260px)*var(--cols)*.8/var(--rows))))}
+.card{display:block;aspect-ratio:4/5;padding:0;border:0;background:none;perspective:700px;cursor:pointer;transition:transform .15s}
+.card:hover{transform:translateY(-4px)}
+.in{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.3,1.3,.5,1)}
+.card.f .in,.card.m .in{transform:rotateY(180deg)}
+.bk,.fc{position:absolute;inset:0;display:grid;place-items:center;border:3px solid var(--edge);border-radius:16%/13%;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 0 0 2px rgba(255,255,255,.45),0 6px 0 rgba(120,70,30,.45),0 10px 16px rgba(60,30,0,.25)}
+.bk{color:#fff3de;background:radial-gradient(circle at 30% 20%,#ffa28f,var(--coral2) 70%)}
+.bk svg{width:46%;height:auto;aspect-ratio:1}
+.fc{transform:rotateY(180deg);align-content:center;border-color:var(--c);background:linear-gradient(var(--panel),var(--panel2))}
+.fc svg{width:84%;height:auto;aspect-ratio:60/62;color:var(--ink)}
+.fc b{font-size:clamp(.75rem,3.4vw,1.1rem);color:var(--c);line-height:1.1;text-align:center}.fc small{font-size:.8em;opacity:.8}
+.card.m{animation:pop .5s .3s}.card.m .fc{box-shadow:inset 0 0 0 2px rgba(255,255,255,.5),0 0 0 3px var(--c),0 0 20px var(--c)}
+@keyframes pop{40%{transform:scale(1.12)}}
+.card.sk{animation:sk .4s}@keyframes sk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.stars{display:flex;justify-content:center;gap:6px}
+.star{width:68px;height:68px;fill:#d9c3a0;stroke:var(--edge);stroke-width:1.2;stroke-linejoin:round}
+.star.on{fill:var(--gold);animation:st .6s both;animation-delay:var(--d)}
+@keyframes st{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.25)}100%{transform:none}}
+.big{text-align:center}.big small{display:block;opacity:.8}.big b{font-size:3.4rem;line-height:1.1;color:var(--coral2)}
+.nb{margin:0 auto;width:fit-content;padding:.1em 1em;font-weight:700;color:#fff;border-radius:99px;background:linear-gradient(#ffb347,#f07a2a);animation:pu .6s}
+.conf{position:fixed;inset:0;z-index:4;pointer-events:none;overflow:hidden}
+.conf i{position:absolute;top:-16px;width:10px;height:14px;border-radius:2px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.author-credit{position:fixed;bottom:8px;right:12px;z-index:10;font-size:0.8rem;color:var(--ink);background:var(--panel);padding:3px 10px;border:2px solid var(--edge);border-radius:8px;opacity:0.85;box-shadow:0 2px 5px rgba(0,0,0,0.15)}
+
+/* ปรับปรุงการใช้งานบนหน้าจอมือถือขนาดเล็กความกว้างไม่เกิน 360px */
+@media(max-width:360px){
+  .screen{padding:12px 10px;gap:12px}
+  .btn{min-height:54px;padding:.7em 1.8em;font-size:1.15rem}
+  .go{font-size:1.7rem;padding:.65em 2.1em;min-height:62px;width:min(300px,92%)}
+  .ic{width:56px;height:56px}
+  .ic svg{width:28px;height:28px}
+  .hud{gap:6px}
+  .hud .ic{width:54px;height:54px}
+  .stat{padding:.25em .2em;border-radius:14px}
+  .stat small{font-size:.68rem}
+  .stat b{font-size:1.15rem}
+  .chip{min-height:48px;padding:.45em 1.1em;font-size:1.05rem}
+  .board{gap:6px;width:100%}
+}
+
+@media(max-height:500px){.screen{gap:8px;padding:8px}.sub,.hero{display:none}.board{width:max(240px,min(100%,560px,calc((100dvh - 150px)*var(--cols)*.8/var(--rows))))}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="n" viewBox="0 0 24 24"><ellipse cx="8" cy="18" rx="4.2" ry="3.2" transform="rotate(-20 8 18)" fill="currentColor"/><path d="M11.8 17V4M11.8 4c.6 4 7 4 7 10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></symbol>
+<symbol id="i-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.6 2.6 0 1 1 3.6 2.4c-.7.4-1.1.9-1.1 1.7M12 17v.1"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5M5.5 10v10h13V10"/></symbol>
+<symbol id="i-re" viewBox="0 0 24 24"><path d="M4.5 12a7.5 7.5 0 1 0 2.5-5.6M4.5 4v4.5H9"/></symbol>
+<symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+<symbol id="i-play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.5l2.9 6.2 6.6.8-4.9 4.6 1.3 6.7L12 17.5l-5.9 3.3 1.3-6.7L2.5 9.5l6.6-.8z"/></symbol>
+</defs></svg>
+<div class="bg" id="bg" aria-hidden="true"></div>
+
+<section class="screen on" id="home">
+  <div class="hero" id="hero" aria-hidden="true"></div>
+  <div class="tt"><h1 class="logo">Note Pairs</h1><p class="sub" data-i18n="sub">จับคู่โน้ต ฟังเสียง ฝึกหูไปพร้อมกัน</p></div>
+  <div class="chips" id="lv" role="radiogroup" aria-label="ระดับความยาก"></div>
+  <button class="btn go" id="start"><svg><use href="#i-play"/></svg><span data-i18n="start">เริ่มเกม</span></button>
+  <div class="row">
+    <button class="btn ic bl" id="bSet" aria-label="ตั้งค่า"><svg><use href="#i-gear"/></svg></button>
+    <button class="btn ic or" id="bHelp" aria-label="วิธีเล่น"><svg><use href="#i-q"/></svg></button>
+  </div>
+  <p class="pill" id="best"></p>
+</section>
+
+<section class="screen" id="game">
+  <div class="hud">
+    <button class="btn ic bl" id="gHome" aria-label="กลับหน้าหลัก"><svg><use href="#i-home"/></svg></button>
+    <div class="stat"><small data-i18n="score">คะแนน</small><b id="sc">0</b></div>
+    <div class="stat"><small data-i18n="moves">ครั้ง</small><b id="mv">0</b></div>
+    <div class="stat"><small data-i18n="time">เวลา</small><b id="tm">0:00</b></div>
+    <button class="btn ic or" id="gRe" aria-label="เริ่มใหม่"><svg><use href="#i-re"/></svg></button>
+  </div>
+  <div class="bar" role="progressbar" aria-label="ความคืบหน้า"><i id="pg"></i><span id="pt"></span></div>
+  <div class="board" id="bd"></div>
+  <p class="pill" id="tip" aria-live="polite"></p>
+</section>
+
+<section class="screen" id="res">
+  <div class="panel"><div class="rib" id="rt"></div>
+    <div class="stars" id="st"></div>
+    <div class="big"><small data-i18n="totalScore">คะแนนรวม</small><b id="rs">0</b></div>
+    <p class="pill" id="ri" style="margin:10px 0"></p>
+    <p class="nb" id="nb" hidden data-i18n="newRecord">สถิติใหม่!</p>
+    <div class="row" style="margin-top:16px">
+      <button class="btn ic bl" id="rHome" aria-label="กลับหน้าหลัก"><svg><use href="#i-home"/></svg></button>
+      <button class="btn" id="rAgain" style="font-size:1.3rem"><svg style="width:1em;height:1em;fill:#fff"><use href="#i-play"/></svg><span data-i18n="playAgain">เล่นอีกครั้ง</span></button>
+    </div>
+  </div>
+</section>
+<div class="conf" id="cf" aria-hidden="true"></div>
+
+<div class="modal" id="md" hidden>
+  <div class="panel" id="setP" role="dialog" aria-label="ตั้งค่า"><div class="rib" data-i18n="settings">ตั้งค่า</div>
+    <button class="btn ic rd cl" aria-label="ปิด"><svg><use href="#i-x"/></svg></button>
+    <div class="r2"><span data-i18n="langLabel">ภาษา / Language</span><button class="chip" id="langBtn" style="padding:0.2em 1em; min-height:36px; font-size:0.9rem;">ไทย / EN</button></div>
+    <div class="r2"><span data-i18n="sound">เสียง</span><button class="sw" id="swS" role="switch" aria-label="เปิดปิดเสียง"></button></div>
+    <div class="r2" style="display:block"><span data-i18n="volume">ระดับเสียง</span><input type="range" id="vol" min="0" max="100" aria-label="ระดับเสียง"></div>
+    <div class="r2" style="border:0"><span data-i18n="peek">เปิดดูการ์ดก่อนเริ่ม 2 วินาที</span><button class="sw" id="swP" role="switch" aria-label="เปิดดูการ์ดก่อนเริ่ม"></button></div>
+  </div>
+  <div class="panel" id="helpP" role="dialog" aria-label="วิธีเล่น"><div class="rib" data-i18n="howToPlay">วิธีเล่น</div>
+    <button class="btn ic rd cl" aria-label="ปิด"><svg><use href="#i-x"/></svg></button>
+    <ol class="steps" id="helpSteps">
+      <li>แตะการ์ดเพื่อพลิก และฟังเสียงโน้ต</li>
+      <li>หาโน้ตที่เหมือนกัน 2 ใบให้เป็นคู่</li>
+      <li>จับคู่ให้ครบด้วยจำนวนครั้งน้อยที่สุด ถูกติดกันได้โบนัสคอมโบ</li>
+    </ol>
+    <div class="row"><button class="btn okb" data-i18n="understood">เข้าใจแล้ว</button></div>
+  </div>
+</div>
+
+<div class="author-credit">สร้างโดย กิตติกร ทองอินทร์</div>
+
+<script>
+const $=s=>document.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
+const NM=['โด','เร','มี','ฟา','ซอล','ลา','ที','โดสูง'],LT='CDEFGABC',CL=['#e0483f','#d9690f','#a67c00','#2f8f3b','#17898a','#3d82f0','#7a56d8','#d6439a'],FQ=[261.63,293.66,329.63,349.23,392,440,493.88,523.25];
+
+const L = {
+  th: {
+    sub: "จับคู่โน้ต ฟังเสียง ฝึกหูไปพร้อมกัน",
+    start: "เริ่มเกม",
+    score: "คะแนน",
+    moves: "ครั้ง",
+    time: "เวลา",
+    totalScore: "คะแนนรวม",
+    newRecord: "สถิติใหม่!",
+    playAgain: "เล่นอีกครั้ง",
+    settings: "ตั้งค่า",
+    langLabel: "ภาษา / Language",
+    sound: "เสียง",
+    volume: "ระดับเสียง",
+    peek: "เปิดดูการ์ดก่อนเริ่ม 2 วินาที",
+    howToPlay: "วิธีเล่น",
+    understood: "เข้าใจแล้ว",
+    levels: { easy: { t: 'ง่าย', pairs: 'คู่' }, mid: { t: 'ปกติ', pairs: 'คู่' }, hard: { t: 'ยาก', pairs: 'คู่' } },
+    tips: {
+      start: "แตะการ์ดเพื่อฟังเสียง แล้วหาโน้ตที่เหมือนกัน",
+      peek: "จำตำแหน่งโน้ตให้ดี!",
+      ready: "เริ่มได้เลย! แตะการ์ดใบแรก",
+      correct: "ถูกต้อง! จับคู่ได้แล้ว",
+      combo: (c) => `คอมโบ ×${c}! ได้โบนัสเพิ่ม`,
+      wrong: "ยังไม่ใช่ จำตำแหน่งแล้วเลือกใหม่"
+    },
+    steps: [
+      "แตะการ์ดเพื่อพลิก และฟังเสียงโน้ต",
+      "หาโน้ตที่เหมือนกัน 2 ใบให้เป็นคู่",
+      "จับคู่ให้ครบด้วยจำนวนครั้งน้อยที่สุด ถูกติดกันได้โบนัสคอมโบ"
+    ],
+    results: ['', 'สำเร็จ!', 'เก่งมาก!', 'สุดยอด!']
+  },
+  en: {
+    sub: "Match notes, listen, and train your ear",
+    start: "Start Game",
+    score: "Score",
+    moves: "Moves",
+    time: "Time",
+    totalScore: "Total Score",
+    newRecord: "New Record!",
+    playAgain: "Play Again",
+    settings: "Settings",
+    langLabel: "Language / ภาษา",
+    sound: "Sound",
+    volume: "Volume",
+    peek: "Peek cards for 2s at start",
+    howToPlay: "How to Play",
+    understood: "Got it",
+    levels: { easy: { t: 'Easy', pairs: 'pairs' }, mid: { t: 'Medium', pairs: 'pairs' }, hard: { t: 'Hard', pairs: 'pairs' } },
+    tips: {
+      start: "Tap a card to hear sound and find matching notes",
+      peek: "Memorize the card positions!",
+      ready: "Go! Tap the first card",
+      correct: "Correct! Pair matched",
+      combo: (c) => `Combo ×${c}! Bonus added`,
+      wrong: "Not a match. Remember and try again"
+    },
+    steps: [
+      "Tap cards to flip and hear notes",
+      "Find 2 matching note cards",
+      "Match all with minimum moves for combo bonus"
+    ],
+    results: ['', 'Great!', 'Awesome!', 'Perfect!']
+  }
+};
+
+const LV={easy:{n:4},mid:{n:6},hard:{n:8}};
+let S={snd:1,vol:.7,peek:0,lv:'mid',lang:'th',b:{}},G={},ac;
+try{Object.assign(S,JSON.parse(localStorage.getItem('np')||'{}'))}catch(e){}
+const save=()=>{try{localStorage.setItem('np',JSON.stringify(S))}catch(e){}};
+const sh=a=>{for(let i=a.length;i>1;){const j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+
+function t(k){return L[S.lang][k]||k;}
+function updateTexts(){
+  $$('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(L[S.lang][k])el.textContent=L[S.lang][k];});
+  const stepsEl = $('#helpSteps');
+  if(stepsEl){stepsEl.innerHTML = L[S.lang].steps.map(s=>`<li>${s}</li>`).join('');}
+}
+
+function tone(f,d=.5,type='triangle',v=1,t0=0){if(!S.snd)return;try{ac=ac||new(window.AudioContext||webkitAudioContext)();if(ac.state=='suspended')ac.resume();const o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime+t0;o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35*S.vol*v,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+d+.05)}catch(e){}}
+function face(i){const y=55-i*3.5,up=i<4;return `<svg viewBox="0 0 60 62" fill="none" stroke="currentColor" stroke-width="1.3">${[20,27,34,41,48].map(v=>`<path d="M6 ${v}H54"/>`).join('')}${i?'':'<path d="M27 55H41"/>'}<ellipse cx="34" cy="${y}" rx="4.6" ry="3.3" fill="currentColor" stroke="none" transform="rotate(-20 34 ${y})"/><path d="M${up?38.4:29.6} ${y}V${up?y-19:y+19}" stroke-width="1.8"/></svg>`}
+const inner=i=>`<div class="in"><div class="bk"><svg><use href="#n"/></svg></div><div class="fc">${face(i)}<b>${NM[i]} <small>${LT[i]}</small></b></div></div>`;
+$('#bg').innerHTML=Array.from({length:9},(_,i)=>`<svg style="left:${(i*11+5)%92}%;top:${(i*37+8)%80}%;--s:${28+i%3*14}px;animation-delay:-${i}s"><use href="#n"/></svg>`).join('');
+$('#hero').innerHTML=[[0,-12,0],[4,0,.4],[6,12,.8]].map(([i,r,d])=>`<div class="card f" style="--c:${CL[i]};--r:${r}deg;--d:${d}s">${inner(i)}</div>`).join('');
+
+function go(id){clearInterval(G.tid);$('#cf').innerHTML='';$$('.screen').forEach(s=>s.classList.toggle('on',s.id==id));scrollTo(0,0);if(id=='home')home()}
+function home(){
+  updateTexts();
+  const lvInfo = L[S.lang].levels;
+  $('#lv').innerHTML=Object.entries(LV).map(([k,v])=>`<button class="chip" role="radio" aria-checked="${k==S.lv}" data-k="${k}">${lvInfo[k].t} <small>${v.n} ${lvInfo[k].pairs}</small></button>`).join('');
+  $('#best').textContent=`${S.lang=='th'?'สถิติสูงสุด':'Best Score'} (${lvInfo[S.lv].t}): ${S.b[S.lv]||'–'} pts`;
+}
+$('#lv').onclick=e=>{const b=e.target.closest('.chip');if(b){S.lv=b.dataset.k;save();tone(FQ[2],.2);home()}};
+$('#start').onclick=()=>{tone(FQ[4],.25);go('game');newGame()};
+$('#gHome').onclick=()=>go('home');$('#rHome').onclick=()=>go('home');
+$('#gRe').onclick=()=>newGame();$('#rAgain').onclick=()=>{go('game');newGame()};
+
+const pulse=e=>{e.classList.remove('pu');void e.offsetWidth;e.classList.add('pu')};
+function ui(p){$('#sc').textContent=G.sc;$('#mv').textContent=G.mv;$('#pg').style.width=G.found/G.n*100+'%';$('#pt').textContent=`${G.found}/${G.n} ${S.lang=='th'?'คู่':'pairs'}`;if(p)pulse($('#sc'))}
+const tick=()=>{G.sec=Math.floor((Date.now()-G.t0)/1000);$('#tm').textContent=fmt(G.sec)};
+const tip=msg=>$('#tip').textContent=msg;
+function newGame(){
+  clearInterval(G.tid);
+  const n=LV[S.lv].n,ids=sh([...Array(8).keys()]).slice(0,n),g=G={deck:sh([...ids,...ids]),open:[],lock:0,found:0,n,mv:0,sc:0,combo:0,t0:0,sec:0};
+  const bd=$('#bd');bd.style.setProperty('--cols',4);bd.style.setProperty('--rows',n/2);
+  bd.innerHTML=g.deck.map((v,k)=>`<button class="card" data-k="${k}" style="--c:${CL[v]}" aria-label="Card ${k+1}">${inner(v)}</button>`).join('');
+  $('#tm').textContent='0:00';ui();tip(L[S.lang].tips.start);
+  if(S.peek){g.lock=1;tip(L[S.lang].tips.peek);const cs=[...bd.children];setTimeout(()=>cs.forEach(c=>c.classList.add('f')),400);setTimeout(()=>{if(g!=G)return;cs.forEach(c=>c.classList.remove('f'));g.lock=0;tip(L[S.lang].tips.ready)},2600)}
+}
+$('#bd').onclick=e=>{
+  const el=e.target.closest('.card'),g=G;
+  if(!el||g.lock||g.done||el.classList.contains('f')||el.classList.contains('m'))return;
+  if(!g.t0){g.t0=Date.now();g.tid=setInterval(tick,500)}
+  const k=+el.dataset.k,v=g.deck[k];el.classList.add('f');tone(FQ[v]);g.open.push(k);
+  if(g.open.length<2)return;
+  g.mv++;g.lock=1;const [a,b]=g.open,cs=$('#bd').children,A=cs[a],B=cs[b];g.open=[];ui();
+  if(g.deck[a]==g.deck[b]){
+    setTimeout(()=>{if(g!=G)return;g.combo++;g.sc+=100+(g.combo-1)*25;g.found++;[A,B].forEach(c=>{c.classList.remove('f');c.classList.add('m')});tone(FQ[v]*2,.6,'sine',.7);tone(FQ[v]*3,.6,'sine',.5,.12);g.lock=0;ui(1);tip(g.combo>1?L[S.lang].tips.combo(g.combo):L[S.lang].tips.correct);if(g.found==g.n)end()},450);
+  }else{
+    g.combo=0;
+    setTimeout(()=>{if(g!=G)return;[A,B].forEach(c=>c.classList.add('sk'));tone(150,.3,'sine',.9);tip(L[S.lang].tips.wrong);setTimeout(()=>{if(g!=G)return;[A,B].forEach(c=>c.classList.remove('f','sk'));g.lock=0},450)},550);
+  }
+};
+function cnt(el,to){const s=performance.now();(function f(t){const p=Math.min(1,(t-s)/900);el.textContent=Math.round(to*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(f)})(s)}
+function end(){
+  const g=G;clearInterval(g.tid);tick();g.done=1;
+  const st=g.mv<=g.n*1.5?3:g.mv<=g.n*2.2?2:1,nb=g.sc>(S.b[S.lv]||0);if(nb){S.b[S.lv]=g.sc;save()}
+  setTimeout(()=>{if(g!=G)return;
+    FQ.forEach((f,i)=>tone(f,.5,'triangle',.8,i*.09));
+    $('#st').innerHTML=[1,2,3].map(i=>`<svg class="star ${i<=st?'on':''}" style="--d:${i*.25}s"><use href="#i-star"/></svg>`).join('');
+    $('#rt').textContent=L[S.lang].results[st];
+    $('#ri').textContent=`${g.mv} ${S.lang=='th'?'ครั้ง':'moves'} · ${fmt(g.sec)} min`;$('#nb').hidden=!nb;
+    go('res');cnt($('#rs'),g.sc);
+    $('#cf').innerHTML=Array.from({length:40},()=>`<i style="left:${Math.random()*100}%;background:${CL[Math.random()*8|0]};animation-duration:${2.5+Math.random()*2}s;animation-delay:${Math.random()*.8}s"></i>`).join('');
+  },800);
+}
+const md=$('#md');
+function openM(id){md.hidden=false;$$('#md .panel').forEach(p=>p.hidden=p.id!=id);$('#'+id+' .cl').focus()}
+$('#bSet').onclick=()=>{sync();openM('setP')};$('#bHelp').onclick=()=>openM('helpP');
+md.onclick=e=>{if(e.target==md||e.target.closest('.cl,.okb'))md.hidden=true};
+addEventListener('keydown',e=>{if(e.key=='Escape')md.hidden=true});
+
+function sync(){
+  $('#swS').setAttribute('aria-checked',!!S.snd);
+  $('#swP').setAttribute('aria-checked',!!S.peek);
+  $('#vol').value=S.vol*100;
+  $('#vol').disabled=!S.snd;
+  $('#langBtn').textContent = S.lang === 'th' ? '🇹🇭 ไทย' : '🇬🇧 English';
+}
+
+$('#langBtn').onclick=()=>{
+  S.lang = S.lang === 'th' ? 'en' : 'th';
+  save();
+  sync();
+  home();
+  tone(FQ[4],.3);
+};
+
+$('#swS').onclick=()=>{S.snd^=1;save();sync();tone(FQ[4],.3)};
+$('#swP').onclick=()=>{S.peek^=1;save();sync()};
+$('#vol').oninput=e=>{S.vol=e.target.value/100;save()};$('#vol').onchange=()=>tone(FQ[4],.3);
+home();sync();
+</script>
+</body>
+</html>
